@@ -2,20 +2,9 @@
 <html>
 <head>
 <title>Test</title>
-  <link rel="stylesheet" href="../jquery/development-bundle/themes/base/jquery.ui.all.css">
-  <script src="../jquery/development-bundle/jquery-1.7.2.js"></script>
-	<script src="../jquery/development-bundle/ui/jquery.ui.core.js"></script>
-	<script src="../jquery/development-bundle/ui/jquery.ui.widget.js"></script>
-	<script src="../jquery/development-bundle/ui/jquery.ui.button.js"></script>
-	<script src="../jquery/development-bundle/ui/jquery.ui.mouse.js"></script>
-	<script src="../jquery/development-bundle/ui/jquery.ui.position.js"></script>	
-  <script src="../jquery/development-bundle/ui/jquery.ui.dialog.js"></script>
-  <script src="../jquery/development-bundle/ui/jquery.effects.core.js"></script>
-  <script src="../jquery/development-bundle/ui/jquery.effects.blind.js"></script>
-  <script src="../jquery/development-bundle/ui/jquery.effects.explode.js"></script>
-  <script src="../jquery/development-bundle/ui/jquery.ui.resizeable.js"></script>
-	<script src="../jquery/development-bundle/ui/jquery.ui.draggable.js"></script>
-	<script src="../jquery/development-bundle/ui/jquery.ui.droppable.js"></script>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.js"></script>
 	<script src="creatediv.js"></script>
 	
 	<style>
@@ -34,7 +23,11 @@
 	
 	<script>
 	$(document).ready(function () {  
-	  $( "#containment-wrapper" ).height( $(window).height() );
+	  $( "#containment-wrapper" ).height( $(window).height()-20 );
+	});
+	
+	$(window).resize(function () {
+	  $( "#containment-wrapper" ).height( $(window).height()-20 );
 	});
   
 	$(function() {
@@ -49,13 +42,21 @@
       $( "#opener" ).remove();
       $( "#dropcontainer" ).show();
       var teststring = oFREvent.target.result;
-      var testarray = teststring.split(";");
-    
-      for(i=0; i<testarray.length-1; i++)
-      {
-        var newobject = createDiv(testarray[i], i);
-        document.getElementById("set").insertBefore(newobject, null);
+      var testarray = teststring.split(/\r\n|\r|\n/);
+      var j = 0;
+            
+      for(i=0; i<=testarray.length; i++){
+        var testline = testarray[i].split(";");
+      
+        for(i=0; i<testline.length-1; i++) {
+          if(testline[i]) {
+            var newobject = createDiv(testline[i], j);
+            document.getElementById("set").insertBefore(newobject, null);
+          }
+          j++;
+        }
       }
+      
       $( "#set div" ).draggable({stack: "#set div", revert: "invalid", containment: "#containment-wrapper" });
     };
     
