@@ -1,0 +1,50 @@
+/* CSS Style */
+
+#set div, #draggable, #revertbutton { 
+  width: 80px; 
+  height: 40px; 
+  padding: 0.5em; 
+  text-align: center; 
+  z-index:2; 
+}
+
+#dropcontainer { 
+  width: 150px; 
+  position: absolute; 
+  right: 10px; 
+  top: 10px;  
+}
+
+#droppable, #droppable2, #droppable3, #droppable4, #droppable5 { 
+  height: 100px; 
+  text-align: center;  
+} 
+
+#containment-wrapper { 
+}
+
+#senddiv { 
+  right: 0em; 
+  padding: 0.5em; 
+  position: absolute; 
+}
+
+#pfad { 
+  padding: 0.5em; 
+  width: 100%; 
+}
+
+.categorizedEntry { 
+  position: static; 
+  width: 100%; 
+  height: 2em; 
+} 
+
+.returnButton { 
+  height: 1.2em; 
+  width: 1.2em; 
+}
+
+button.ui-button-icon-only { 
+  width: 1.4em; 
+}
