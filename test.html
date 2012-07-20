@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test</title>
+  <link rel="stylesheet" href="../jquery/development-bundle/themes/base/jquery.ui.all.css">
+  <script src="../jquery/development-bundle/jquery-1.7.2.js"></script>
+	<script src="../jquery/development-bundle/ui/jquery.ui.core.js"></script>
+	<script src="../jquery/development-bundle/ui/jquery.ui.widget.js"></script>
+	<script src="../jquery/development-bundle/ui/jquery.ui.button.js"></script>
+	<script src="../jquery/development-bundle/ui/jquery.ui.mouse.js"></script>
+	<script src="../jquery/development-bundle/ui/jquery.ui.position.js"></script>	
+  <script src="../jquery/development-bundle/ui/jquery.ui.dialog.js"></script>
+  <script src="../jquery/development-bundle/ui/jquery.effects.core.js"></script>
+  <script src="../jquery/development-bundle/ui/jquery.effects.blind.js"></script>
+  <script src="../jquery/development-bundle/ui/jquery.effects.explode.js"></script>
+  <script src="../jquery/development-bundle/ui/jquery.ui.resizeable.js"></script>
+	<script src="../jquery/development-bundle/ui/jquery.ui.draggable.js"></script>
+	<script src="../jquery/development-bundle/ui/jquery.ui.droppable.js"></script>
+	<script src="creatediv.js"></script>
+	
+	<style>
+  #set div, #draggable, #revertbutton { width: 80px; height: 40px; padding: 0.5em; text-align: center; z-index:2; }
+  #dropcontainer { width: 150px; position: absolute; right: 10px; top: 10px;  }
+  #droppable, #droppable2, #droppable3, #droppable4, #droppable5 { height: 100px; text-align: center;  } 
+  #containment-wrapper { }
+  /* #hochladendialog{ position: absolute; width: 100em; height: 40em; } */
+  #senddiv { right: 0em; padding: 0.5em; position: absolute; }
+  #pfad { padding: 0.5em; width: 100%; }
+  .categorizedEntry { position: static; width: 100%; height: 2em; } 
+  .returnButton { height: 1.2em; width: 1.2em; }
+  button.ui-button-icon-only { width: 1.4em; }
+	</style>
+	
+	
+	<script>
+	$(document).ready(function () {  
+	  $( "#containment-wrapper" ).height( $(window).height() );
+	});
+  
+	$(function() {
+	  $( "#dropcontainer" ).hide();
+	  oFReader = new FileReader();
+    oFReader.onerror = function (oFREvent) {
+      alert(oFREvent.target.error.code);
+    };
+  
+    oFReader.onload = function (oFREvent) {
+      $( "#hochladendialog" ).dialog( "close" );
+      $( "#opener" ).remove();
+      $( "#dropcontainer" ).show();
+      var teststring = oFREvent.target.result;
+      var testarray = teststring.split(";");
+    
+      for(i=0; i<testarray.length-1; i++)
+      {
+        var newobject = createDiv(testarray[i], i);
+        document.getElementById("set").insertBefore(newobject, null);
+      }
+      $( "#set div" ).draggable({stack: "#set div", revert: "invalid", containment: "#containment-wrapper" });
+    };
+    
+    $( "#send" ).click( function() {
+      if (document.getElementById("pfad").files.length === 0) { alert("no file chosen"); return; }
+      var oFile = document.getElementById("pfad").files[0];
+      oFReader.readAsText(oFile);
+    });
+    
+		$( "#set div" ).draggable({stack: "#set div", revert: "invalid", containment: "#containment-wrapper" });	
+		$( "#droppable, #droppable2, #droppable3, #droppable4, #droppable5" ).droppable({ 
+		  drop: function(event, ui) {
+		    $(ui.draggable).fadeOut(600, function() { $( this ).remove(); });
+		    htval = createEntry($(this).html(), $(ui.draggable).html(), $(ui.draggable).attr('id'));
+		    $(this).html(htval).children().last().hide().delay(250).fadeIn(600);    
+		    
+		    $( "button" ).button({
+          icons: { primary: "ui-icon-arrowreturnthick-1-w" },
+          text: false, 
+          create: function (event, ui) {
+            rm = $( this ).children().last();
+            rm.remove();
+            $( this ).click( function() {
+              el = $( this ).parent();
+	            newobject = createDiv(el.text(), parseInt(el.attr('id')));
+	            document.getElementById("set").insertBefore(newobject, null);
+	            el.fadeOut(600, function() { $( this ).remove(); });
+	            $( "#set" ).children().last().hide().fadeIn(600);
+	            $( "#set div" ).draggable({stack: "#set div", revert: "invalid", containment: "#containment-wrapper" });	
+		        });
+		      } //end create
+		    }); //end button
+		  } //end drop
+		}); //end droppable
+    
+    $( "#hochladendialog" ).dialog({
+			autoOpen: false,
+			title: "Datei hochladen",
+			minWidth: 415, 
+			minHeight: 130
+		});
+		
+		$( "#opener" ).click(function() {
+			$( "#hochladendialog" ).dialog( "open" );
+			return false;
+		});
+	});
+	
+	</script>
+</head>
+
+<body>
+<div id="containment-wrapper">
+
+
+<div id="hochladendialog" >
+<form id="hochladen" onsubmit="return false">
+  <input type="file" id="pfad" /><br />
+  <div id="senddiv"><input type="submit" id="send" value="Abschicken" /></div>
+</form>
+</div>
+<button id="opener">Datei hochladen</button>
+
+<div id="set">
+</div>
+
+
+<div id="dropcontainer" class="ui-widget-content">
+  <div id="droppable" class="ui-widget-content">Nachname</div>
+  <div id="droppable2" class="ui-widget-content">Vorname(n)</div>
+  <div id="droppable3" class="ui-widget-content">Beruf</div>
+  <div id="droppable4" class="ui-widget-content">Geburtsjahr</div>
+  <div id="droppable5" class="ui-widget-content">Sterbejahr</div>
+</div>
+
+</div>
+
+</body>
+</html>
